@@ -71,15 +71,9 @@ export function Tasks({ navigation, route }) {
   }
 
   const removeTask = async (task) => {
-    Animated.timing(task.fadeAnim, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(async () => {
     const newTasks = tasks.filter((t) => t !== task);
     await AsyncStorage.setItem('tasks', JSON.stringify(newTasks));
     setTasks(newTasks);
-    })
   }
 
   return (
@@ -90,7 +84,6 @@ export function Tasks({ navigation, route }) {
           <AntDesign name="plus" size={40} color="black" onPress={() => navigation.navigate('Create')} />
         </View>
         {(status === 'ready' && tasks) && tasks.map((task, index) => {
-          task.fadeAnim = new Animated.Value(1);
           return (
             <Animated.View key={index}
               style={{
@@ -100,7 +93,6 @@ export function Tasks({ navigation, route }) {
                 elevation: 3,
                 // background color must be set
                 backgroundColor: "white",
-                opacity: task.fadeAnim,
               }}
               >
               <View style={{ flex: 1, paddingRight: 10 }}>
