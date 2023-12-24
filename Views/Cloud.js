@@ -1,10 +1,12 @@
+import { useEffect } from "react";
 import { Button, SafeAreaView, Text, View } from "react-native";
 
-export function Home({ navigation }) {
+export function Cloud({ navigation }) {
+
     return (
         <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Home Screen</Text>
-            <Button title="Go to Tasks" onPress={() => navigation.navigate('Tasks')} />
+            <Text>Log in</Text>
+            <Text>Log in to sync your tasks between your devices</Text>
         </SafeAreaView>
     );
 }

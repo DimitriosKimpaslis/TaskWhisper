@@ -1,46 +1,69 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home } from './Views/Home';
+import { Cloud } from './Views/Cloud';
 import { Tasks } from './Views/Tasks';
+import { Create } from './Views/Create';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { TasksStackNavigator } from './Componets/TaskNavigator';
+
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function App() {
+
+  const [loggedIn, setLoggedIn] = React.useState(false);
+  React.useEffect(() => {
+    setLoggedIn(false);
+  }
+    , [])
+
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#f4511e',
+      <Tab.Navigator
+        initialRouteName={'Tasks'}
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            let rn = route.name;
+        
+            if (rn === 'Cloud') {
+              iconName = focused ? 'cloud' : 'cloud-outline';
+            } else if (rn === 'TasksNavigate') {
+              iconName = focused ? 'list' : 'list-outline';
+            } else if (rn === 'Create') {
+              iconName = focused ? 'add-circle' : 'add-circle-outline';
+            }
+        
+            return <Ionicons name={iconName} size={size} color={color} />;
           },
-          headerTitle: '',
-          headerLeft: () => (
-            <View style={{ marginLeft: 10 }}>
-              <Text>Menu</Text>
-            </View>
-          ),
-          headerRight: () => (
-            <View style={{ marginRight: 10 }}>
-              <Text>Settings</Text>
-            </View>
-          ),
-        }}>
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Tasks" component={Tasks} />
-      </Stack.Navigator>
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'grey',
+          tabBarLabelStyle: {
+            paddingBottom: 10,
+            fontSize: 10
+          },
+          tabBarStyle: [
+            {
+              display: "flex",
+              padding: 10,
+              height: 70
+            },
+            null
+          ]
+        })}>
+
+        <Tab.Screen name={'TasksNavigate'} component={TasksStackNavigator} options={{title: 'Tasks'}}/>
+        <Tab.Screen name={'Create'} component={Create} />
+        <Tab.Screen name={'Cloud'} component={Cloud} />
+
+
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
 
 export default App;
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
