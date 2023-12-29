@@ -1,14 +1,12 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Cloud } from './Views/Cloud';
+// import { Cloud } from './Views/Cloud';
 import { Create } from './Views/Create';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TasksStackNavigator } from './Componets/TaskNavigator';
 
 
-const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function App() {
@@ -56,7 +54,7 @@ function App() {
 
         <Tab.Screen name={'TasksNavigate'} component={TasksStackNavigator} options={{title: 'Tasks'}}/>
         <Tab.Screen name={'Create'} component={Create} />
-        <Tab.Screen name={'Cloud'} component={Cloud} />
+        {/* <Tab.Screen name={'Cloud'} component={Cloud} /> */}
 
 
       </Tab.Navigator>
