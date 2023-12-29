@@ -10,6 +10,7 @@ export function Tasks({ navigation, route }) {
   const [tasks, setTasks] = useState([]);
   const [status, setStatus] = useState('loading');
   const [filter, setFilter] = useState('high');
+  const [filterReloadKey, setFilterReloadKey] = useState(0);
 
   const priorityOrder = {
     'very-low': 1,
@@ -60,7 +61,7 @@ export function Tasks({ navigation, route }) {
       setTasks(tasks);
     }
     sortTasks();
-  }, [filter])
+  }, [filterReloadKey, reloadKey])
 
   const priorityColors = {
     'very-low': '#add8e6',
@@ -71,26 +72,19 @@ export function Tasks({ navigation, route }) {
   }
 
   const removeTask = async (task) => {
-    Animated.timing(task.fadeAnim, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(async () => {
     const newTasks = tasks.filter((t) => t !== task);
     await AsyncStorage.setItem('tasks', JSON.stringify(newTasks));
     setTasks(newTasks);
-    })
   }
 
   return (
     <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10 }}>
       <ScrollView style={{ width: '100%' }} showsVerticalScrollIndicator={false}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <FilterPopup filter={filter} setFilter={setFilter} />
+          <FilterPopup setFilter={setFilter} setFilterReloadKey={setFilterReloadKey} filterReloadKey={filterReloadKey} />
           <AntDesign name="plus" size={40} color="black" onPress={() => navigation.navigate('Create')} />
         </View>
         {(status === 'ready' && tasks) && tasks.map((task, index) => {
-          task.fadeAnim = new Animated.Value(1);
           return (
             <Animated.View key={index}
               style={{
@@ -100,7 +94,6 @@ export function Tasks({ navigation, route }) {
                 elevation: 3,
                 // background color must be set
                 backgroundColor: "white",
-                opacity: task.fadeAnim,
               }}
               >
               <View style={{ flex: 1, paddingRight: 10 }}>

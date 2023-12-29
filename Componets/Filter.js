@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 export const FilterPopup = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
-    const { filter, setFilter } = props;
+    const { setFilter, setFilterReloadKey, filterReloadKey } = props;
     return (
         <View style={styles.container}>
             {/* Trigger Button */}
@@ -26,6 +26,7 @@ export const FilterPopup = (props) => {
 
                     <TouchableOpacity onPress={() => {
                         setFilter('high')
+                        setFilterReloadKey(filterReloadKey + 1);
                         setModalVisible(!modalVisible);
                     }}
                     style={{width:'100%', alignItems: 'center', marginBottom: 5}}>
@@ -33,12 +34,16 @@ export const FilterPopup = (props) => {
                     </TouchableOpacity>
                     <TouchableOpacity style={{width:'100%', alignItems: 'center',marginBottom: 5}} onPress={() => {
                         setFilter('low')
+                        setFilterReloadKey(filterReloadKey + 1);
+
                         setModalVisible(!modalVisible);
                     }}>
                         <Text style={{fontSize: 15,backgroundColor: '#add8e6', padding: 6, borderRadius: 5, width: '80%', textAlign: 'center'}}>Low Priority First</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{width:'100%', alignItems: 'center'}} onPress={() => {
                         setFilter('recent')
+                        setFilterReloadKey(filterReloadKey + 1);
+
                         setModalVisible(!modalVisible);
                     }}>
                         <Text style={{fontSize: 15,backgroundColor: 'green', padding: 6, borderRadius: 5, width: '80%', textAlign: 'center'}}>Recent</Text>
