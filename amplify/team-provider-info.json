@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-taskwhisper-dev-190706-authRole",
+      "UnauthRoleArn": "arn:aws:iam::310851162738:role/amplify-taskwhisper-dev-190706-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::310851162738:role/amplify-taskwhisper-dev-190706-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-taskwhisper-dev-190706-deployment",
+      "UnauthRoleName": "amplify-taskwhisper-dev-190706-unauthRole",
+      "StackName": "amplify-taskwhisper-dev-190706",
+      "StackId": "arn:aws:cloudformation:eu-central-1:310851162738:stack/amplify-taskwhisper-dev-190706/881565a0-a5a3-11ee-9eb0-0a261b23b491",
+      "AmplifyAppId": "d1p7pv1xq9m8o0"
+    },
+    "categories": {
+      "api": {
+        "taskwhisper": {}
+      },
+      "auth": {
+        "taskwhispere22c4627": {}
+      }
+    }
+  }
+}
