@@ -9,7 +9,7 @@ export const FilterPopup = (props) => {
         <View style={styles.container}>
             {/* Trigger Button */}
             <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <MaterialIcons name="sort" size={40} color="black" />
+                <MaterialIcons name="sort" size={30} color="black" />
             </TouchableOpacity>
 
             {/* Modal for Filters */}
@@ -21,6 +21,7 @@ export const FilterPopup = (props) => {
                     setModalVisible(!modalVisible);
                 }}
             >
+                <MaterialIcons name="close" size={30} color="black" onPress={() => setModalVisible(!modalVisible)} style={{position: 'absolute', top: 40, right: 40, zIndex: 10}}/>
                 <View style={styles.modalView}>
                     <Text style={{marginBottom: 15, textAlign: 'center', fontSize: 25, fontWeight: '600'}}>Filter Options</Text>
 
@@ -60,6 +61,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     modalView: {
+        position: 'relative',
         margin: 20,
         backgroundColor: 'white',
         borderRadius: 20,

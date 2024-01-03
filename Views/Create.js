@@ -1,8 +1,21 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { SafeAreaView, Text, TextInput, View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { SafeAreaView, Text, TextInput, View, StyleSheet, ScrollView, TouchableOpacity, Button } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Feather } from '@expo/vector-icons';
+import DateTime from "../Componets/DateTime";
+import * as Notifications from 'expo-notifications';
+
+async function scheduleNotification(title, body, data, seconds) {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "You've got mail! 📬",
+      body: 'Here is the notification body',
+      data: { data: 'goes here' },
+    },
+    trigger: { seconds: 2 },
+  });
+}
+
 
 const priorityColors = {
     'very-low': '#add8e6',
@@ -44,7 +57,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         elevation: 3,
         // background color must be set
-        backgroundColor: "white"
+        backgroundColor: "white",
+        marginBottom: 30,
     },
     scrollView: {
         alignItems: 'center',
@@ -81,25 +95,15 @@ const styles = StyleSheet.create({
 
 
 export function Create({ navigation, route }) {
-    let edit = route.params?.edit;
-    const taskToEdit = route.params?.taskToEdit;
+
     const renderKey = route.params?.renderKey;
 
     const [task, setTask] = useState('');
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState('low')
     const [date, setDate] = useState(new Date());
-    const [editMode, setEditMode] = useState(false);
-
-    useEffect(() => {
-        if (edit) {
-            setEditMode(true);
-            setTask(taskToEdit.task);
-            setDescription(taskToEdit.description);
-            setPriority(taskToEdit.priority);
-            setDate(taskToEdit.date);
-        }
-    }, [renderKey])
+    const [categories, setCategories] = useState([]);
+    const [notify, setNotify] = useState(false);
 
     const handleCreate = async () => {
         const newTask = {
@@ -109,6 +113,7 @@ export function Create({ navigation, route }) {
             date,
             created_at: new Date(),
             index: Math.random(),
+            completed: false,
         };
 
         const tasks = await AsyncStorage.getItem('tasks');
@@ -118,57 +123,20 @@ export function Create({ navigation, route }) {
         }
         tasksArray.push(newTask);
         await AsyncStorage.setItem('tasks', JSON.stringify(tasksArray));
-        setTask('');
-        setDescription('');
-        setPriority('low');
-        setEditMode(false);
-        navigation.navigate('Tasks', { reloadKey: Math.random() })
-
-    }
-
-    const cancelEdit = () => {
-        setTask('');
-        setDescription('');
-        setPriority('low');
-        setEditMode(false);
-        navigation.navigate('Create')
-    }
-
-    const handleUpdate = async () => {
-        const updatedTask = {
-            task,
-            description,
-            priority,
-            date,
-            created_at: new Date(),
-            index: Math.random(),
-        };
-
-        const tasks = await AsyncStorage.getItem('tasks');
-        let tasksArray = JSON.parse(tasks);
-        if (!tasksArray) {
-            tasksArray = [];
+        if (notify) {
+            scheduleNotification();
         }
-        const index = tasksArray.findIndex((task) => task.index === taskToEdit.index);
-        tasksArray[index] = updatedTask;
-        await AsyncStorage.setItem('tasks', JSON.stringify(tasksArray));
         setTask('');
         setDescription('');
         setPriority('low');
-        setEditMode(false);
         navigation.navigate('Tasks', { reloadKey: Math.random() })
+
     }
 
     return (
         <SafeAreaView style={styles.container}>
 
-            {editMode &&
-                <TouchableOpacity style={{ width: '80%', alignItems: 'flex-end' }} onPress={cancelEdit}>
-                    <Feather name="x" size={24} color="black" />
-                </TouchableOpacity>
-            }
-
-            <Text style={styles.title}>{editMode ? 'Edit Mode' : 'New Task'}</Text>
+            <Text style={styles.title}>New Task</Text>
             <View style={{ justifyContent: 'center', width: '80%' }}>
                 <Text style={{ backgroundColor: priorityColors[priority], padding: 3, marginBottom: 5, width: '100%' }}></Text>
             </View>
@@ -186,7 +154,14 @@ export function Create({ navigation, route }) {
                 numberOfLines={4}
                 value={description}
             />
+
+            <DateTime date={date} setDate={setDate} notify={notify} setNotify={setNotify} />
+
+
             <Text style={{ fontSize: 20, marginTop: 10, fontWeight: '500' }}>Priority</Text>
+
+
+
             <ScrollView
                 contentOffset={{ x: 70, y: 0 }}
                 horizontal
@@ -228,15 +203,9 @@ export function Create({ navigation, route }) {
                 </TouchableOpacity>
 
             </ScrollView>
-            {editMode ?
-                <TouchableOpacity style={{ width: '80%' }} onPress={handleUpdate}>
-                    <Text style={{ backgroundColor: 'black', padding: 10, marginBottom: 5, width: '100%', textAlign: 'center', color: 'white' }}>Update</Text>
-                </TouchableOpacity>
-                :
-                <TouchableOpacity style={{ width: '80%' }} onPress={handleCreate}>
-                    <Text style={{ backgroundColor: 'black', padding: 10, marginBottom: 5, width: '100%', textAlign: 'center', color: 'white' }}>Create</Text>
-                </TouchableOpacity>
-            }
+            <TouchableOpacity style={{ width: '80%' }} onPress={handleCreate}>
+                <Text style={{ backgroundColor: 'black', padding: 10, marginBottom: 5, width: '100%', textAlign: 'center', color: 'white' }}>Create</Text>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 }

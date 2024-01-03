@@ -5,6 +5,10 @@ import { Create } from './Views/Create';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TasksStackNavigator } from './Componets/TaskNavigator';
+import { DateTimePicker } from '@react-native-community/datetimepicker';
+import DateTime from './Componets/DateTime';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { registerForPushNotificationsAsync } from './pushNotify';
 
 
 const Tab = createBottomTabNavigator();
@@ -17,6 +21,18 @@ function App() {
   }
     , [])
 
+  React.useEffect(() => {
+    const initiateCategories = async () => {
+      const categories = await AsyncStorage.getItem('categories');
+      if (!categories) {
+        await AsyncStorage.setItem('categories', JSON.stringify([]));
+      }
+    }
+
+    initiateCategories();
+    registerForPushNotificationsAsync()
+  }, [])
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -25,7 +41,7 @@ function App() {
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
             let rn = route.name;
-        
+
             if (rn === 'Cloud') {
               iconName = focused ? 'cloud' : 'cloud-outline';
             } else if (rn === 'TasksNavigate') {
@@ -33,7 +49,7 @@ function App() {
             } else if (rn === 'Create') {
               iconName = focused ? 'add-circle' : 'add-circle-outline';
             }
-        
+
             return <Ionicons name={iconName} size={size} color={color} />;
           },
           tabBarActiveTintColor: 'tomato',
@@ -52,8 +68,9 @@ function App() {
           ]
         })}>
 
-        <Tab.Screen name={'TasksNavigate'} component={TasksStackNavigator} options={{title: 'Tasks'}}/>
+        <Tab.Screen name={'TasksNavigate'} component={TasksStackNavigator} options={{ title: 'Tasks' }} />
         <Tab.Screen name={'Create'} component={Create} />
+        <Tab.Screen name={'Test'} component={DateTime} />
         {/* <Tab.Screen name={'Cloud'} component={Cloud} /> */}
 
 
