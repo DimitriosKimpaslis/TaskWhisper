@@ -1,4 +1,4 @@
-import { Animated, Button, ScrollView, Text, Touchable, TouchableOpacity, View } from "react-native";
+import { Animated, Button, Image, ScrollView, Text, Touchable, TouchableOpacity, View } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -117,7 +117,7 @@ export function Tasks({ navigation, route }) {
             >
               <View style={{ flex: 1, paddingRight: 10 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 5, marginBottom: 7 }}>
-                  <Text style={{color: '#242629'}}>#category</Text>
+                  {task.category && <Text style={{ color: '#242629' }}>#{task.category}</Text>}
                   <AntDesign name="check" size={26} color="green" onPress={() => completeTask(task)} />
                 </View>
                 <TouchableOpacity onPress={() => navigation.navigate('TaskPage', { task: task })}>
@@ -145,18 +145,23 @@ export function Tasks({ navigation, route }) {
                 elevation: 3,
                 // background color must be set
                 backgroundColor: "white",
+                position: 'relative',
+                overflow: 'hidden'
               }}
             >
-              <View style={{ flex: 1, paddingRight: 10 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 5, marginBottom: 7 }}>
-                  <AntDesign name="delete" size={26} color="green" onPress={() => removeTask(task)} />
+              <View style={{ flexDirection: 'row' }}>
+                <View style={{ flex: 1, paddingRight: 10 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 5, marginBottom: 7 }}>
+                    <AntDesign name="delete" size={26} color="green" onPress={() => removeTask(task)} />
+                  </View>
+                  <TouchableOpacity onPress={() => navigation.navigate('TaskPage', { task: task })}>
+                    <Text style={{ fontSize: 18, textDecorationLine: 'line-through' }}>{task.task.slice(0, 60) + (task.task.length > 60 ? '...' : '')}</Text>
+                    <Text style={{ fontSize: 12, textDecorationLine: 'line-through' }}>{task.description.slice(0, 300) + (task.description.length > 300 ? '...' : '')}</Text>
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={() => navigation.navigate('TaskPage', { task: task })}>
-                  <Text style={{ fontSize: 18, textDecorationLine: 'line-through' }}>{task.task.slice(0, 60) + (task.task.length > 60 ? '...' : '')}</Text>
-                  <Text style={{ fontSize: 12, textDecorationLine: 'line-through' }}>{task.description.slice(0, 300) + (task.description.length > 300 ? '...' : '')}</Text>
-                </TouchableOpacity>
-
+                <Image source={require('../images/completed.png')} style={{ width: 100, height: 100, }} />
               </View>
+
               <View style={{ backgroundColor: priorityColors[task.priority], width: 15, height: '100%' }}></View>
             </View>
           )

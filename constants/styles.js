@@ -6,9 +6,9 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 10,
-        width: 130,
         paddingVertical: 8,
         backgroundColor: '#007BFF',
         marginBottom: 5,
+        flexGrow: 1
     }
 })
