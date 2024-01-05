@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 export const FilterPopup = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
     const { setFilter, setFilterReloadKey, filterReloadKey } = props;
+    
     return (
         <View style={styles.container}>
             {/* Trigger Button */}

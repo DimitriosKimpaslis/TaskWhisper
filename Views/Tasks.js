@@ -83,6 +83,7 @@ export function Tasks({ navigation, route }) {
     newTasks.push(task);
     await AsyncStorage.setItem('tasks', JSON.stringify(newTasks));
     setTasks(newTasks);
+    if(task.notify) await cancelScheduledNotificationAsync(task.notifyId);
   }
 
   const checkIfAnyUncompletedTasks = () => {
@@ -111,19 +112,32 @@ export function Tasks({ navigation, route }) {
                 shadowColor: 'black',
                 shadowOpacity: 0.3,
                 elevation: 3,
-                // background color must be set
                 backgroundColor: "white",
               }}
             >
               <View style={{ flex: 1, paddingRight: 10 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 5, marginBottom: 7 }}>
-                  {task.category && <Text style={{ color: '#242629' }}>#{task.category}</Text>}
+                {/* date created */}
+                <Text style={{ fontSize: 10, color: 'grey', marginBottom: 5 }}>{new Date(task.created_at).toLocaleDateString()}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 5 }}>
+                  {/* category */}
+                  <Text style={{ color: '#242629' }}>#{task.category ? task.category : 'task'}</Text>
                   <AntDesign name="check" size={26} color="green" onPress={() => completeTask(task)} />
                 </View>
+                
                 <TouchableOpacity onPress={() => navigation.navigate('TaskPage', { task: task })}>
+                  {/* title */}
                   <Text style={{ fontSize: 18 }}>{task.task.slice(0, 60) + (task.task.length > 60 ? '...' : '')}</Text>
+                  {/* description */}
                   <Text style={{ fontSize: 12 }}>{task.description.slice(0, 300) + (task.description.length > 300 ? '...' : '')}</Text>
                 </TouchableOpacity>
+
+                {task.notify &&
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <AntDesign name="clockcircle" size={16} color="gray" style={{ marginTop: 10 }} />
+                    <Text style={{ fontSize: 12, color: 'grey', marginLeft: 5,marginTop: 8 }}>
+                      {new Date(task.date).toLocaleDateString()} {new Date(task.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </Text>
+                  </View>}
 
               </View>
               <View style={{ backgroundColor: priorityColors[task.priority], width: 15, height: '100%' }}></View>
@@ -154,6 +168,8 @@ export function Tasks({ navigation, route }) {
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 5, marginBottom: 7 }}>
                     <AntDesign name="delete" size={26} color="green" onPress={() => removeTask(task)} />
                   </View>
+                  <Text style={{ fontSize: 10, color: 'grey', marginBottom: 5 }}>{new Date(task.created_at).toLocaleDateString()}</Text>
+                  <Text style={{ color: '#242629', textDecorationLine: 'line-through' }}>#{task.category ? task.category : 'task'}</Text>
                   <TouchableOpacity onPress={() => navigation.navigate('TaskPage', { task: task })}>
                     <Text style={{ fontSize: 18, textDecorationLine: 'line-through' }}>{task.task.slice(0, 60) + (task.task.length > 60 ? '...' : '')}</Text>
                     <Text style={{ fontSize: 12, textDecorationLine: 'line-through' }}>{task.description.slice(0, 300) + (task.description.length > 300 ? '...' : '')}</Text>

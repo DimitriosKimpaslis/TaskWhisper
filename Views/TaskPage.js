@@ -13,7 +13,7 @@ const TaskPage = ({ navigation, route }) => {
         'high': '#ff6666',
     }
     return (
-        <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10 }}>
+        <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10, marginTop: 5 }}>
             <ScrollView style={{ width: '100%' }} showsVerticalScrollIndicator={false}>
                 {task &&
                     <View

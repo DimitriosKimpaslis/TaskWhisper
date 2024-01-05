@@ -9,6 +9,7 @@ import { DateTimePicker } from '@react-native-community/datetimepicker';
 import DateTime from './Componets/DateTime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { registerForPushNotificationsAsync } from './pushNotify';
+import { Test } from './Test';
 
 
 const Tab = createBottomTabNavigator();
@@ -70,8 +71,7 @@ function App() {
 
         <Tab.Screen name={'TasksNavigate'} component={TasksStackNavigator} options={{ title: 'Tasks' }} />
         <Tab.Screen name={'Create'} component={Create} />
-        <Tab.Screen name={'Test'} component={DateTime} />
-        {/* <Tab.Screen name={'Cloud'} component={Cloud} /> */}
+        {/* <Tab.Screen name={'Test'} component={Test} /> */}
 
 
       </Tab.Navigator>

@@ -1,25 +1,26 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { SafeAreaView, Text, TextInput, View, StyleSheet, ScrollView, TouchableOpacity, Button } from "react-native";
+import { Text, TextInput, View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTime from "../Componets/DateTime";
 import * as Notifications from 'expo-notifications';
 import { Feather } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import { handleCategories, handleCategoryCreation } from "../categories";
+import {  handleCategoryCreation, handleCategoryDeletion } from "../categories";
 
 
 async function scheduleNotification(title, body, data, seconds) {
-    await Notifications.scheduleNotificationAsync({
+    const notificationId = await Notifications.scheduleNotificationAsync({
         content: {
             title: "You've got mail! 📬",
             body: 'Here is the notification body',
             data: { data: 'goes here' },
         },
-        trigger: { seconds: 2 },
+        trigger: { seconds: 5 },
     });
-}
+    return notificationId;
+} 
+
 
 
 const priorityColors = {
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     inputBody: {
         width: '80%',
         height: 100,
-        padding: 8,
+        padding: 20,
         shadowOffset: { width: 10, height: 10 },
         shadowColor: 'black',
         shadowOpacity: 0.3,
@@ -132,6 +133,10 @@ export function Create({ navigation, route }) {
         , [category])
 
     const handleCreate = async () => {
+        let notifyId
+        if (notify) {
+            notifyId = await scheduleNotification();
+        }
         const newTask = {
             task,
             description,
@@ -139,6 +144,8 @@ export function Create({ navigation, route }) {
             date,
             category,
             created_at: new Date(),
+            notify,
+            notifyId,
             index: Math.random(),
             completed: false,
         };
@@ -153,9 +160,7 @@ export function Create({ navigation, route }) {
         }
         tasksArray.push(newTask);
         await AsyncStorage.setItem('tasks', JSON.stringify(tasksArray));
-        if (notify) {
-            scheduleNotification();
-        }
+
         setTask('');
         setDescription('');
         setPriority('low');
@@ -167,133 +172,144 @@ export function Create({ navigation, route }) {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
-                <View style={{height: 100}}></View>
-                <Text style={styles.title}>New Task</Text>
-                <View style={{ justifyContent: 'center', width: '80%' }}>
-                    <Text style={{ backgroundColor: priorityColors[priority], padding: 3, marginBottom: 5, width: '100%' }}></Text>
-                </View>
+        <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ height: 100 }}></View>
+            <Text style={styles.title}>New Task</Text>
+            <View style={{ justifyContent: 'center', width: '80%' }}>
+                <Text style={{ backgroundColor: priorityColors[priority], padding: 3, marginBottom: 5, width: '100%' }}></Text>
+            </View>
 
 
 
-                <TextInput
-                    style={styles.inputTask}
-                    placeholder="Task"
-                    onChangeText={text => setTask(text)}
-                    value={task}
-                />
-                <TextInput
-                    style={styles.inputBody}
-                    placeholder="Description"
-                    onChangeText={text => setDescription(text)}
-                    multiline={true}
-                    numberOfLines={4}
-                    value={description}
-                />
+            <TextInput
+                style={styles.inputTask}
+                placeholder="Task"
+                onChangeText={text => setTask(text)}
+                value={task}
+            />
+            <TextInput
+                style={styles.inputBody}
+                placeholder="Description"
+                onChangeText={text => setDescription(text)}
+                multiline={true}
+                numberOfLines={4}
+                value={description}
+            />
 
 
-                <View style={{ width: '80%', marginVertical: 20 }}>
-                    {categories.length > 0 ?
-                        <View>
-                            <Text style={{ fontSize: 20, marginTop: 10, fontWeight: '500' }}>Category</Text>
+            <View style={{ width: '80%', marginVertical: 20 }}>
+                {categories.length > 0 ?
+                    <View style={{}}>
+                        <Text style={{ fontSize: 20, fontWeight: '400', textAlign: 'center' }}>Category</Text>
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignContent: 'center', marginVertical: 10 }}>
                             <ScrollView
-                                contentOffset={{ x: 70, y: 0 }}
+                                contentOffset={{ x: 20, y: 0 }}
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={styles.scrollView}
-                                style={{ flexGrow: 0 }}
+                                contentContainerStyle={{ alignContent: 'center', justifyContent: 'center', alignItems: 'center' }}
+                                style={{ flexGrow: 0, marginHorizontal: 5 }}
                             >
-                                {categories.map((category) => {
+                                {categories.map((category, index) => {
                                     return (
                                         <TouchableOpacity
-                                            style={{}}
-                                            onPress={() => setCategory(category.name)}
+                                            key={index}
+                                            style={{ backgroundColor: 'black', borderRadius: 15, padding: 8, marginHorizontal: 5 }}
+                                            onPress={() => setCategory(category)}
                                         >
-                                            <Text style={{}}>{category}</Text>
+                                            <View style={{ flexDirection: 'row', alignContent: 'center' }}>
+                                                <Text style={{ color: 'white', marginRight: 10 }}>#{category}</Text>
+                                                <AntDesign name="close" size={15} color="white" onPress={async () => {
+                                                    await handleCategoryDeletion(category)
+                                                    await getCategories();
+                                                    }} style={{ top: 2 }} />
+                                            </View>
+
                                         </TouchableOpacity>
                                     )
                                 }
                                 )}
                             </ScrollView>
                         </View>
-                        :
-                        <View style={{ alignItems: 'center' }}>
-                            <Text style={{ fontSize: 16, fontWeight: '400' }}>No categories yet</Text>
-                        </View>
-                    }
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                        <Feather name="hash" size={24} color="black" />
-                        <TextInput style={{ flexGrow: 1, height: 50, padding: 8, marginBottom: 5, shadowOffset: { width: 10, height: 10 }, shadowColor: 'black', shadowOpacity: 0.3, elevation: 3, backgroundColor: "white" }} placeholder="Set new category" onChangeText={text => setCategory(text)} value={category} />
+
+
                     </View>
+                    :
+                    <View style={{ alignItems: 'center', marginBottom: 5 }}>
+                        <Text style={{ fontSize: 16, fontWeight: '400' }}>No categories yet</Text>
+                    </View>
+                }
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <Feather name="hash" size={24} color="black" />
+                    <TextInput style={{ flexGrow: 1, height: 50, padding: 8, marginBottom: 5, shadowOffset: { width: 10, height: 10 }, shadowColor: 'black', shadowOpacity: 0.3, elevation: 3, backgroundColor: "white" }} placeholder="Set new category" onChangeText={text => setCategory(text)} value={category} />
                 </View>
+            </View>
 
 
 
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 3, marginTop: 20 }}>
-                    <AntDesign name="pushpino" size={24} color="black" />
-                    <Text style={{ fontSize: 20, fontWeight: '400' }}>Task Importance</Text>
-                </View>
-                <ScrollView
-                    contentOffset={{ x: 70, y: 0 }}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.scrollView}
-                    style={{ flexGrow: 0, marginBottom: 40, marginTop: 8 }}
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 3, marginTop: 20 }}>
+                <AntDesign name="pushpino" size={24} color="black" />
+                <Text style={{ fontSize: 20, fontWeight: '400' }}>Task Importance</Text>
+            </View>
+            <ScrollView
+                contentOffset={{ x: 70, y: 0 }}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.scrollView}
+                style={{ flexGrow: 0, marginBottom: 40, marginTop: 8 }}
+            >
+                <TouchableOpacity
+                    style={[styles.option, styles.very_low]}
+                    onPress={() => setPriority('very-low')}
                 >
-                    <TouchableOpacity
-                        style={[styles.option, styles.very_low]}
-                        onPress={() => setPriority('very-low')}
-                    >
-                        <Text style={styles.text}>Very Low</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.option, styles.low]}
-                        onPress={() => setPriority('low')}
-                    >
-                        <Text style={styles.text}>Low</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={[styles.option, styles.medium]}
-                        onPress={() => setPriority('medium')}
-                    >
-                        <Text style={styles.text}>Medium</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={[styles.option, styles.urgent]}
-                        onPress={() => setPriority('urgent')}
-                    >
-                        <Text style={styles.text}>Urgent</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.option, styles.high]}
-                        onPress={() => setPriority('high')}
-                    >
-                        <Text style={styles.text}>High</Text>
-                    </TouchableOpacity>
-
-                </ScrollView>
-
-
-                <View style={{ width: '80%', backgroundColor: 'black', height: 1, marginVertical: 5 }}></View>
-
-
-                <DateTime date={date} setDate={setDate} notify={notify} setNotify={setNotify} />
-
-
-
-                <TouchableOpacity style={{ width: '80%', marginBottom: 20 }} onPress={handleCreate}>
-                    <Text style={{ backgroundColor: 'black', padding: 10, marginBottom: 5, width: '100%', textAlign: 'center', color: 'white' }}>Create</Text>
+                    <Text style={styles.text}>Very Low</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.option, styles.low]}
+                    onPress={() => setPriority('low')}
+                >
+                    <Text style={styles.text}>Low</Text>
                 </TouchableOpacity>
 
+                <TouchableOpacity
+                    style={[styles.option, styles.medium]}
+                    onPress={() => setPriority('medium')}
+                >
+                    <Text style={styles.text}>Medium</Text>
+                </TouchableOpacity>
 
-
+                <TouchableOpacity
+                    style={[styles.option, styles.urgent]}
+                    onPress={() => setPriority('urgent')}
+                >
+                    <Text style={styles.text}>Urgent</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.option, styles.high]}
+                    onPress={() => setPriority('high')}
+                >
+                    <Text style={styles.text}>High</Text>
+                </TouchableOpacity>
 
             </ScrollView>
-        </SafeAreaView>
+
+
+            <View style={{ width: '80%', backgroundColor: 'black', height: 1, marginVertical: 5 }}></View>
+
+
+            <DateTime date={date} setDate={setDate} notify={notify} setNotify={setNotify} />
+
+
+
+            <TouchableOpacity style={{ width: '80%', marginBottom: 20 }} onPress={handleCreate}>
+                <Text style={{ backgroundColor: 'black', padding: 10, marginBottom: 5, width: '100%', textAlign: 'center', color: 'white' }}>Create</Text>
+            </TouchableOpacity>
+
+
+
+
+        </ScrollView >
     );
 }
 
