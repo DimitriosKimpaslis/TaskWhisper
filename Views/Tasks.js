@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from '@expo/vector-icons';
 import { FilterPopup } from "../Componets/Filter";
+import Notification from "../Notification";
 
 export function Tasks({ navigation, route }) {
   const { reloadKey } = route.params || {};
@@ -102,8 +103,9 @@ export function Tasks({ navigation, route }) {
           <FilterPopup setFilter={setFilter} setFilterReloadKey={setFilterReloadKey} filterReloadKey={filterReloadKey} />
           <AntDesign name="plus" size={30} color="black" onPress={() => navigation.navigate('Create')} />
         </View>
+        {checkIfAnyUncompletedTasks() ? null : <Text style={{ fontSize: 20, fontWeight: '400', fontStyle: 'italic' }}>No tasks to show</Text>}
         {(status === 'ready' && tasks) && tasks.map((task, index) => {
-          if (checkIfAnyUncompletedTasks() === false) return <Text style={{ fontSize: 20, fontWeight: '400', fontStyle: 'italic' }}>No tasks to show</Text>
+          
           if (task.completed) return null;
           return (
             <View key={index}

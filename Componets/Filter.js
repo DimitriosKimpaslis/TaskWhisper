@@ -32,7 +32,7 @@ export const FilterPopup = (props) => {
                         setModalVisible(!modalVisible);
                     }}
                     style={{width:'100%', alignItems: 'center', marginBottom: 5}}>
-                        <Text style={{fontSize: 15,backgroundColor: '#f0f0f0', padding: 6, borderRadius: 5, width: '80%', textAlign: 'center'}}>High Priority First</Text>
+                        <Text style={{fontSize: 15,backgroundColor: '#f0f0f0', padding: 6,  width: '80%', textAlign: 'center'}}>High Priority First</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{width:'100%', alignItems: 'center',marginBottom: 5}} onPress={() => {
                         setFilter('low')
@@ -40,7 +40,7 @@ export const FilterPopup = (props) => {
 
                         setModalVisible(!modalVisible);
                     }}>
-                        <Text style={{fontSize: 15,backgroundColor: '#f0f0f0', padding: 6, borderRadius: 5, width: '80%', textAlign: 'center'}}>Low Priority First</Text>
+                        <Text style={{fontSize: 15,backgroundColor: '#f0f0f0', padding: 6, width: '80%', textAlign: 'center'}}>Low Priority First</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{width:'100%', alignItems: 'center'}} onPress={() => {
                         setFilter('recent')
@@ -48,7 +48,7 @@ export const FilterPopup = (props) => {
 
                         setModalVisible(!modalVisible);
                     }}>
-                        <Text style={{fontSize: 15,backgroundColor: '#f0f0f0', padding: 6, borderRadius: 5, width: '80%', textAlign: 'center'}}>Recent</Text>
+                        <Text style={{fontSize: 15,backgroundColor: '#f0f0f0', padding: 6,  width: '80%', textAlign: 'center'}}>Recent</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
         position: 'relative',
         margin: 20,
         backgroundColor: 'white',
-        borderRadius: 20,
         padding: 35,
         alignItems: 'center',
         shadowColor: '#000',

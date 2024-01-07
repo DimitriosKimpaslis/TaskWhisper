@@ -3,24 +3,10 @@ import { useState } from "react";
 import { Text, TextInput, View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTime from "../Componets/DateTime";
-import * as Notifications from 'expo-notifications';
 import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import {  handleCategoryCreation, handleCategoryDeletion } from "../categories";
-
-
-async function scheduleNotification(title, body, data, seconds) {
-    const notificationId = await Notifications.scheduleNotificationAsync({
-        content: {
-            title: "You've got mail! 📬",
-            body: 'Here is the notification body',
-            data: { data: 'goes here' },
-        },
-        trigger: { seconds: 5 },
-    });
-    return notificationId;
-} 
-
+import Notification, { schedulePushNotification } from "../Notification";
 
 
 const priorityColors = {
@@ -135,7 +121,7 @@ export function Create({ navigation, route }) {
     const handleCreate = async () => {
         let notifyId
         if (notify) {
-            notifyId = await scheduleNotification();
+            notifyId = await schedulePushNotification(task, priority, description, date);
         }
         const newTask = {
             task,
@@ -166,6 +152,7 @@ export function Create({ navigation, route }) {
         setPriority('low');
         setDate(new Date());
         setCategory('');
+        setNotify(false);
         await getCategories();
         navigation.navigate('Tasks', { reloadKey: Math.random() })
 
@@ -307,7 +294,7 @@ export function Create({ navigation, route }) {
             </TouchableOpacity>
 
 
-
+            <Notification />
 
         </ScrollView >
     );

@@ -1,15 +1,21 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-// import { Cloud } from './Views/Cloud';
 import { Create } from './Views/Create';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TasksStackNavigator } from './Componets/TaskNavigator';
-import { DateTimePicker } from '@react-native-community/datetimepicker';
-import DateTime from './Componets/DateTime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { registerForPushNotificationsAsync } from './pushNotify';
 import { Test } from './Test';
+import * as Notifications from "expo-notifications";
+import Notification from './Notification';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 
 const Tab = createBottomTabNavigator();
@@ -31,7 +37,6 @@ function App() {
     }
 
     initiateCategories();
-    registerForPushNotificationsAsync()
   }, [])
 
   return (
