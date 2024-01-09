@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTime from "../Componets/DateTime";
 import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import {  handleCategoryCreation, handleCategoryDeletion } from "../categories";
+// import {  handleCategoryCreation, handleCategoryDeletion } from "../categories";
 import Notification, { schedulePushNotification } from "../Notification";
 
 
@@ -94,29 +94,19 @@ export function Create({ navigation, route }) {
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState('low')
     const [date, setDate] = useState(new Date());
-    const [categories, setCategories] = useState([]);
-    const [category, setCategory] = useState('');
+    // const [categories, setCategories] = useState([]);
+    // const [category, setCategory] = useState('');
     const [notify, setNotify] = useState(false);
 
-    const getCategories = async () => {
-        const categories = await AsyncStorage.getItem('categories');
-        setCategories(JSON.parse(categories));
+    // const getCategories = async () => {
+    //     const categories = await AsyncStorage.getItem('categories');
+    //     setCategories(JSON.parse(categories));
 
-    }
+    // }
 
-    useEffect(() => {
-        getCategories();
-    }, [])
-
-    useEffect(() => {
-        console.log(categories);
-    }
-        , [categories])
-
-    useEffect(() => {
-        console.log(category);
-    }
-        , [category])
+    // useEffect(() => {
+    //     getCategories();
+    // }, [])
 
     const handleCreate = async () => {
         let notifyId
@@ -128,7 +118,7 @@ export function Create({ navigation, route }) {
             description,
             priority,
             date,
-            category,
+            // category,
             created_at: new Date(),
             notify,
             notifyId,
@@ -136,7 +126,7 @@ export function Create({ navigation, route }) {
             completed: false,
         };
 
-        await handleCategoryCreation(category);
+        // await handleCategoryCreation(category);
 
 
         const tasks = await AsyncStorage.getItem('tasks');
@@ -151,9 +141,9 @@ export function Create({ navigation, route }) {
         setDescription('');
         setPriority('low');
         setDate(new Date());
-        setCategory('');
+        // setCategory('');
         setNotify(false);
-        await getCategories();
+        // await getCategories();
         navigation.navigate('Tasks', { reloadKey: Math.random() })
 
     }
@@ -184,7 +174,7 @@ export function Create({ navigation, route }) {
             />
 
 
-            <View style={{ width: '80%', marginVertical: 20 }}>
+            {/* <View style={{ width: '80%', marginVertical: 20 }}>
                 {categories.length > 0 ?
                     <View style={{}}>
                         <Text style={{ fontSize: 20, fontWeight: '400', textAlign: 'center' }}>Category</Text>
@@ -230,7 +220,7 @@ export function Create({ navigation, route }) {
                     <Feather name="hash" size={24} color="black" />
                     <TextInput style={{ flexGrow: 1, height: 50, padding: 8, marginBottom: 5, shadowOffset: { width: 10, height: 10 }, shadowColor: 'black', shadowOpacity: 0.3, elevation: 3, backgroundColor: "white" }} placeholder="Set new category" onChangeText={text => setCategory(text)} value={category} />
                 </View>
-            </View>
+            </View> */}
 
 
 
@@ -286,6 +276,9 @@ export function Create({ navigation, route }) {
 
 
             <DateTime date={date} setDate={setDate} notify={notify} setNotify={setNotify} />
+            <Notification notify={notify} setNotify={setNotify}/>
+
+
 
 
 
@@ -293,8 +286,6 @@ export function Create({ navigation, route }) {
                 <Text style={{ backgroundColor: 'black', padding: 10, marginBottom: 5, width: '100%', textAlign: 'center', color: 'white' }}>Create</Text>
             </TouchableOpacity>
 
-
-            <Notification />
 
         </ScrollView >
     );

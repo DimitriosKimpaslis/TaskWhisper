@@ -44,10 +44,10 @@ const DateTime = ({ date, setDate, notify, setNotify }) => {
                     <Text style={{ color: '#FFFFFF' }}>{date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</Text>
                 </TouchableOpacity>
             </View>
-            <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+            {/* <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
                 <Text style={{ fontSize: 18 }}>Notify me</Text>
                 <Checkbox style={{ margin: 8 }} value={notify} onValueChange={setNotify} />
-            </View>
+            </View> */}
         </View>
     );
 };

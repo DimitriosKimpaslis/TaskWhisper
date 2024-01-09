@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Notification from "./Notification";
 
 const styles = StyleSheet.create({
     container: {
@@ -54,17 +55,7 @@ export const Test = ({ navigation }) => {
     const [description, setDescription] = useState('');
 
     return (
-            <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                <Text style={styles.title}>Test</Text>
-                <TextInput
-                    style={styles.inputBody}
-                    placeholder="Description"
-                    onChangeText={text => setDescription(text)}
-                    multiline={true}
-                    numberOfLines={4}
-                    value={description}
-                />
-            </ScrollView>
+            <Notification />
     )
 }
 

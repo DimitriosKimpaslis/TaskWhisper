@@ -26,10 +26,9 @@ const TaskPage = ({ navigation, route }) => {
                 <View style={{ flex: 1, paddingRight: 10 }}>
                     {/* date created */}
                     <Text style={{ fontSize: 10, color: 'grey', marginBottom: 5 }}>{new Date(task.created_at).toLocaleDateString()}</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 5 }}>
-                        {/* category */}
+                    {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 5 }}> 
                         <Text style={{ color: '#242629' }}>#{task.category ? task.category : 'task'}</Text>
-                    </View>
+                    </View> */}
 
                     {/* title */}
                     {task.task && <Text style={{ fontSize: 18 }}>{task.task}</Text>}

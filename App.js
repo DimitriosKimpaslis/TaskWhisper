@@ -7,7 +7,7 @@ import { TasksStackNavigator } from './Componets/TaskNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Test } from './Test';
 import * as Notifications from "expo-notifications";
-import Notification from './Notification';
+
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
